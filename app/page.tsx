@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,7 @@ export default function Home() {
     }
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen overflow-hidden">
             <header className="h-16 flex items-center justify-between px-4 bg-white border-b shadow-sm flex-shrink-0">
                 <div className="flex items-center">
                     <Image src="/aps-logo.svg" alt="Autodesk Platform Services" width={40} height={40} className="h-10 w-auto" />
@@ -58,10 +58,16 @@ export default function Home() {
 
             {user ? (
                 <div className="flex flex-1 overflow-hidden">
-                    <ResizableSidebar initialWidth={300} minWidth={200} maxWidth={600}>
+                    {/* Pass a className to ensure proper styling with the resize handle */}
+                    <ResizableSidebar 
+                        initialWidth={300} 
+                        minWidth={200} 
+                        maxWidth={600}
+                        className="h-full bg-white border-r"
+                    >
                         <Sidebar onVersionSelected={handleVersionSelect} />
                     </ResizableSidebar>
-
+                    
                     <div className="flex-1 overflow-hidden p-4">
                         <Viewer versionId={selectedVersion} />
                     </div>
@@ -69,7 +75,9 @@ export default function Home() {
             ) : (
                 <div className="flex-1 flex flex-col justify-center items-center">
                     <h2 className="text-2xl font-bold mb-4">Welcome to Construction Cloud Browser</h2>
-                    <p className="text-gray-600 mb-6 text-center max-w-md">Please log in with your Autodesk account to browse your Construction Cloud projects and view models.</p>
+                    <p className="text-gray-600 mb-6 text-center max-w-md">
+                        Please log in with your Autodesk account to browse your Construction Cloud projects and view models.
+                    </p>
                     <Button onClick={handleLogin} size="lg">
                         Login with Autodesk
                     </Button>

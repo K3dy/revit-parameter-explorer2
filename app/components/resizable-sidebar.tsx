@@ -66,6 +66,8 @@ export function ResizableSidebar({
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
+      // Ensure body class is removed when component unmounts
+      document.body.classList.remove('resizing');
     };
   }, [isResizing, minWidth, maxWidth, width]);
 
@@ -88,17 +90,43 @@ export function ResizableSidebar({
     <div
       ref={sidebarRef}
       className={`relative ${className}`}
-      style={{ width: `${width}px`, flexShrink: 0 }}
+      style={{ 
+        width: `${width}px`, 
+        flexShrink: 0
+      }}
     >
       {children}
       
-      {/* Resize handle */}
+      {/* Enhanced resize handle with better visibility */}
       <div
-        className="absolute top-0 right-0 h-full w-4 cursor-col-resize flex items-center justify-center z-10"
+        className="absolute top-0 right-0 h-full flex items-center justify-center"
+        style={{
+          width: '12px',
+          right: '-6px',
+          cursor: 'col-resize',
+          zIndex: 50,
+          touchAction: 'none'
+        }}
         onMouseDown={handleMouseDown}
-        style={{ touchAction: 'none' }}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          startXRef.current = touch.clientX;
+          startWidthRef.current = width;
+          setIsResizing(true);
+          document.body.classList.add('resizing');
+        }}
       >
-        <div className={`w-1 h-full transition-colors ${isResizing ? 'bg-blue-500' : 'bg-gray-200 hover:bg-blue-300'}`} />
+        {/* Visible line element */}
+        <div 
+          className={`rounded transition-colors ${
+            isResizing ? 'bg-blue-500 w-2' : 'bg-gray-400 w-1 hover:bg-blue-400 hover:w-2'
+          }`}
+          style={{ 
+            height: '100%',
+            transition: 'width 0.1s, background-color 0.2s'
+          }} 
+        />
       </div>
     </div>
   );
